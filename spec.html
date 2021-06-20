@@ -39249,13 +39249,17 @@ THH:mm:ss.sss
             1. Let _thenFinallyClosure_ be a new Abstract Closure with parameters (_value_) that captures _onFinally_ and _C_ and performs the following steps when called:
               1. Let _result_ be ? Call(_onFinally_, *undefined*).
               1. Let _promise_ be ? PromiseResolve(_C_, _result_).
-              1. Let _valueThunk_ be equivalent to a function that returns _value_.
+              1. Let _returnValue_ be a new Abstract Closure with no parameters that captures _value_ and performs the following steps when called:
+                1. Return _value_.
+              1. Let _valueThunk_ be ! CreateBuiltinFunction(_returnValue_, 0, *""*, &laquo; &raquo;).
               1. Return ? Invoke(_promise_, *"then"*, &laquo; _valueThunk_ &raquo;).
             1. Let _thenFinally_ be ! CreateBuiltinFunction(_thenFinallyClosure_, 1, *""*, &laquo; &raquo;).
             1. Let _catchFinallyClosure_ be a new Abstract Closure with parameters (_reason_) that captures _onFinally_ and _C_ and performs the following steps when called:
               1. Let _result_ be ? Call(_onFinally_, *undefined*).
               1. Let _promise_ be ? PromiseResolve(_C_, _result_).
-              1. Let _thrower_ be equivalent to a function that throws _reason_.
+              1. Let _throwReason_ be a new Abstract Closure with no parameters that captures _reason_ and performs the following steps when called:
+                1. Return ThrowCompletion(_reason_).
+              1. Let _thrower_ be ! CreateBuiltinFunction(_throwReason_, 0, *""*, &laquo; &raquo;).
               1. Return ? Invoke(_promise_, *"then"*, &laquo; _thrower_ &raquo;).
             1. Let _catchFinally_ be ! CreateBuiltinFunction(_catchFinallyClosure_, 1, *""*, &laquo; &raquo;).
           1. Return ? Invoke(_promise_, *"then"*, &laquo; _thenFinally_, _catchFinally_ &raquo;).
